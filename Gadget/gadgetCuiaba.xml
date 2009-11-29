@@ -87,9 +87,9 @@
 								var milliseconds = (feed.Entry[i].Date) * 1000;
 								var date = new Date(milliseconds);
 								html += "<br>";
-								//html += date.toLocaleDateString();
-                                                                html +=date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear();
-								html +=" Original Date "+feed.Entry[i].Date
+								html += date.toLocaleDateString();
+                                                                //html +=date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear();
+								//html +=" Original Date "+feed.Entry[i].Date
                                                                 html += " ";
 								html += date.toLocaleTimeString();
 								html += "</div>";
