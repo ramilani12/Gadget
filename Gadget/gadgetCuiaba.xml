@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs title="Gadget Notícias Cuiabá" title_url="" 
+		     description="Últimas notícias Cuiabá" 
+                     author="Raphael Milani" author_email="ramilani@gmail.com" thumbnail="" 
+                     screenshot="" scrolling="true"/>
+	<UserPref name="num_tipo" display_name="Mostrar:" datatype="enum" default_value="1">
+		<EnumValue value="1" display_value="TV Centro America"/>
+		<EnumValue value="2" display_value="Olhar Direto"/>
+	</UserPref>
+	<UserPref name="num_entries" display_name="Entradas:" datatype="enum" default_value="10">
+		<EnumValue value="10" display_value="10"/>
+		<EnumValue value="20" display_value="20"/>
+		<EnumValue value="50" display_value="50"/>
+		<EnumValue value="100" display_value="100"/>
+	</UserPref>
+	<UserPref name="num_refresh" display_name="Atualizar:" datatype="enum" default_value="5">
+		<EnumValue value="5" display_value="5 min"/>
+		<EnumValue value="10" display_value="10 min"/>
+		<EnumValue value="20" display_value="20 min"/>
+	</UserPref>
+	<Content type="html">
+		<![CDATA[
+			  <style> #content_div { font-size: 80%;  margin: 5px; background-color: #FFFFBF;} </style>
+
+			  <div id=content_div></div>
+
+			  <script type="text/javascript">
+				  var prefs = new _IG_Prefs(__MODULE_ID__);
+				  var tipo = prefs.getInt("num_tipo");
+				  var entries = prefs.getInt("num_entries");
+				  var tempo = prefs.getInt("num_refresh")*60*1000;
+				  var inicio = true;
+				  
+				  
+				  var url = null;
+				  
+				  switch(tipo){
+				      case 1:
+                                         url = "http://feeds.feedburner.com/tv_centro_america?format=xml";
+                                      break;
+                                      case 2:
+                                         url = "http://www.olhardireto.com.br/rss/rss-olhardireto.xml"
+                                      break;
+                                      default:
+                                          url = "http://feeds.feedburner.com/tv_centro_america?format=xml";
+
+				  }
+				 
+				  if (!tempo || tempo<60000) {
+					   tempo = 60000;
+				  }
+
+				  function carregar() {
+
+				  if (inicio) {
+				  	_gel("content_div").innerHTML = "Carregando...";
+				  } else {
+				  	_gel("content_div").innerHTML = "Atualizando...";
+				  }
+
+				  inicio = false;
+				  
+					_IG_FetchFeedAsJSON(url,
+					function(feed) {
+						if (feed == null){
+							_gel("content_div").innerHTML = "Sem Dados";
+							setTimeout("carregar()",tempo);
+							return;
+						}
+
+						// Start building HTML string that will be displayed in gadget.
+						var html = "";
+
+						html += "<div><b>" + feed.Title + "</b></div>";
+						html += "<div>" + feed.Description + "</div><br>";
+
+						if (feed.Entry) {
+							for (var i = 0; i < feed.Entry.length; i++) {
+								html += "<div>"
+									+ "<a target='_blank' href='" + feed.Entry[i].Link + "'>"
+										+ feed.Entry[i].Title
+										+ "</a> ";
+								var milliseconds = (feed.Entry[i].Date) * 1000;
+								var date = new Date(milliseconds);
+								html += "<br>";
+								html += date.toLocaleDateString();
+								html += " ";
+								html += date.toLocaleTimeString();
+								html += "</div>";
+							}
+
+							_gel("content_div").innerHTML = html;
+
+							setTimeout("carregar()",tempo);
+
+					}}, entries, false);
+
+				}
+
+				_IG_RegisterOnloadHandler(carregar);
+
+			      </script>
+							      ]]>
+						      </Content>
+</Module>
