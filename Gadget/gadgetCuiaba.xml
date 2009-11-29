@@ -89,7 +89,8 @@
 								html += "<br>";
 								//html += date.toLocaleDateString();
                                                                 html +=date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear();
-								html += " ";
+								html +="Original Date "+feed.Entry[i].Date
+                                                                html += " ";
 								html += date.toLocaleTimeString();
 								html += "</div>";
 							}
